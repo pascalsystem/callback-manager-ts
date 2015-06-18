@@ -28,6 +28,7 @@
     "callbackmanagerts"
   ],
   "scripts": {
-    "test": "./node_modules/.bin/mocha ./tests/basic.js"
+    "test": "./node_modules/.bin/mocha ./tests/basic.js",
+    "generate-docs": "./node_modules/.bin/typedoc --module commonjs --target ES5 --out docs/ src/"
   }
 }
