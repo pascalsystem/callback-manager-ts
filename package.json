@@ -1,11 +1,11 @@
 {
   "name": "callback-manager-ts",
-  "version": "0.0.1",
   "description": "Callback manager for synchronous, asynchronous and support TypeScript",
+  "version": "0.0.1",
+  "author": "Bartłomiej Królikowski <info@pascalsystem.pl>",
   "main": "dist/app.js",
-  "directories": {
-    "example": "example"
-  },
+  "license": "MIT",
+  "repository": "pascalsystem/callback-manager-ts",
   "dependencies": {
   },
   "devDependencies": {
@@ -16,16 +16,17 @@
     "gulp-mocha": "2.1.1",
     "mocha": "2.2.5"
   },
-  "scripts": {
-    "test": "./node_modules/.bin/mocha ./tests/basic.js"
-  },
   "keywords": [
-    "callbacl",
-    "TypeScript",
+    "callback",
     "manager",
     "synchronous",
-    "asynchronous"
+    "asynchronous",
+    "typescript",
+    "ts",
+    "callbackmanager",
+    "callbackmanagerts"
   ],
-  "author": "PascalSystem.pl",
-  "license": "ISC"
+  "scripts": {
+    "test": "./node_modules/.bin/mocha ./tests/basic.js"
+  }
 }
