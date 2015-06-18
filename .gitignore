@@ -1,4 +1,5 @@
 .DS_Store
 .idea
 .settings
+.npm-debug.log
 node_modules
