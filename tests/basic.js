@@ -115,7 +115,6 @@ describe('Test sync Object', function(){
 });
 
 // async
-
 describe('Test async Function', function(){
   it("should return number equal 20", function(done){
     var cb = new lib.Async();
@@ -206,8 +205,38 @@ describe('Test async Object', function(){
   });
 });
 
-// empty
+// null result pass to callback
+describe('Test Empty', function(){
+  it("Sync empty", function(done){
+    var testFunction = function(x1, x2, cb){
+      var res = x1 + x2;
+      setTimeout(function(){
+        if (res == 10) {
+          return cb(null);
+        }
+        cb(res);
+      }, 100);
+    };
+    var cb = new lib.Sync();
+    cb.addFunction(testFunction, [5,5]);
+    cb.addFunction(testFunction, [5,10]);
+    cb.start(function(results){
+      var res1 = getResultObjectByIndexAndParamNum(0, 0, results);
+      var res2 = getResultObjectByIndexAndParamNum(1, 0, results);
+      
+      if (res1 !== null) {
+        throw new Error('result from idx 0 is not equal null');
+      }
+      if (res2 !== 15) {
+        throw new Error('result from idx 1 is not equal 15');
+      }
+      
+      done();
+    });
+  });
+});
 
+// empty
 describe('Test Empty', function(){
   it("Sync empty", function(done){
     var cb = new lib.Sync();
