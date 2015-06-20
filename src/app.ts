@@ -73,7 +73,7 @@ export class Async extends manager.Manager
 	 * @property currentIndex
 	 * @type {number}
 	 * @default 0
-	 * @private
+	 * @protected
 	 */
 	protected currentIndex:number = 0;
 	
@@ -112,4 +112,54 @@ export class Async extends manager.Manager
 			this.sendResponse();
 		}
 	}
+}
+
+/**
+ * The {{#crossLink "AsyncBreak"}}{{/crossLink}} Manager asynchronous callback with break
+ *
+ * @class AsyncBreak
+ * @extends Async
+ * @param options {[key:string]:any}
+ * @constructor
+ **/
+export class AsyncBreak extends Async
+{
+	/**
+	 * Error argument numbers
+	 * 
+	 * @property errorArgumentNums
+	 * @type {number[]}
+	 * @default []
+	 * @protected
+	 */
+	protected errorArgumentNums:number[] = [];
+	
+	public constructor(options?:{[key:string]:any})
+	{
+		super(options);
+	}
+	
+	/**
+	 * Set results for item by callback
+	 * 
+	 * @method setResult
+	 * @param index {number}
+	 * @param args {any[]}
+	 * @public
+	 */
+	protected setResultByIndex(index:number, args:any[])
+	{
+		this.saveResult(index, args);
+		if (this.checkEnd()) {
+			this.sendResponse();
+			return;
+		}
+		if ((index < this.errorArgumentNums.length) && (this.errorArgumentNums[index] < args.length)
+			&& args[this.errorArgumentNums[index]]) {
+			this.sendResponse();
+			return;
+		}
+		this.currentIndex++;
+		this.items[this.currentIndex].start();
+	}	
 }

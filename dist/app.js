@@ -79,7 +79,7 @@ var Async = (function (_super) {
          * @property currentIndex
          * @type {number}
          * @default 0
-         * @private
+         * @protected
          */
         this.currentIndex = 0;
         this.setCallbackResponseClass(Result);
@@ -114,3 +114,50 @@ var Async = (function (_super) {
     return Async;
 })(manager.Manager);
 exports.Async = Async;
+/**
+ * The {{#crossLink "AsyncBreak"}}{{/crossLink}} Manager asynchronous callback with break
+ *
+ * @class AsyncBreak
+ * @extends Async
+ * @param options {[key:string]:any}
+ * @constructor
+ **/
+var AsyncBreak = (function (_super) {
+    __extends(AsyncBreak, _super);
+    function AsyncBreak(options) {
+        _super.call(this, options);
+        /**
+         * Error argument numbers
+         *
+         * @property errorArgumentNums
+         * @type {number[]}
+         * @default []
+         * @protected
+         */
+        this.errorArgumentNums = [];
+    }
+    /**
+     * Set results for item by callback
+     *
+     * @method setResult
+     * @param index {number}
+     * @param args {any[]}
+     * @public
+     */
+    AsyncBreak.prototype.setResultByIndex = function (index, args) {
+        this.saveResult(index, args);
+        if (this.checkEnd()) {
+            this.sendResponse();
+            return;
+        }
+        if ((index < this.errorArgumentNums.length) && (this.errorArgumentNums[index] < args.length)
+            && args[this.errorArgumentNums[index]]) {
+            this.sendResponse();
+            return;
+        }
+        this.currentIndex++;
+        this.items[this.currentIndex].start();
+    };
+    return AsyncBreak;
+})(Async);
+exports.AsyncBreak = AsyncBreak;
