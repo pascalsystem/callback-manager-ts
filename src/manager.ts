@@ -33,7 +33,7 @@ export class BasicResult
 	 * @returns {any[]}
 	 * @public
 	 */
-	public getResultByIndex(index:number)
+	public getResultByIndex(index:number):any
 	{
 		return this.result.getResult(index);
 	}
@@ -271,6 +271,9 @@ export class Manager
 	 */
 	public start(callback?:(results:BasicResult)=>void)
 	{
+        if (typeof callback === 'undefined') {
+            callback = (results:BasicResult) => {};
+        }
 		this.setCallback(callback);
 		if (this.items.length === 0) {
 			this.sendResponse();

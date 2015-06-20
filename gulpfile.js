@@ -16,7 +16,8 @@ gulp.task('typescript', function(){
 	return gulp.src(PATHS.src.ts).pipe(ts({
 		typescript: typescript,
 		target: 'ES5',
-		module: 'commonjs'
+		module: 'commonjs',
+		declarationFiles: true
 	})).js.pipe(gulp.dest(PATHS.dest.dist));
 });
 

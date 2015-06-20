@@ -13,6 +13,11 @@ Module has simple tests
 # TypeScript
 This module writen in TypeScript
 
+If you use TypeScript you must put this line with correct path in your script.
+```code
+/// <reference path='./node_modules/callback-manager-ts/callback-manager-ts.d.ts' /> 
+```
+
 # Installation
 ```bash
 npm i callback-manager-ts
@@ -24,8 +29,6 @@ npm run-script generate-docs
 ```
 #Future
 ~~~
-1. Create TypeScript definition file
-2. Create asynchronous queue with break on first error, and passing data to next callable
-3. Prepare better usage documentation
-4. Fix docblock in current files and generate correctly library documentation
+1. Create asynchronous queue with break on first error, and passing data to next callable
+2. Fix docblock in current files and generate correctly library documentation
 ~~~

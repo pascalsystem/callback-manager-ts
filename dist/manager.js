@@ -206,6 +206,9 @@ var Manager = (function () {
      * @public
      */
     Manager.prototype.start = function (callback) {
+        if (typeof callback === 'undefined') {
+            callback = function (results) { };
+        }
         this.setCallback(callback);
         if (this.items.length === 0) {
             this.sendResponse();
