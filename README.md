@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/pascalsystem/callback-manager-ts.svg?branch=master)](https://travis-ci.org/pascalsystem/callback-manager-ts)
 # callback-manager-ts
 
 This is the library for managing and grouping response from callback.
