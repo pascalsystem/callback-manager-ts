@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/pascalsystem/callback-manager-ts.svg?branch=master)](https://travis-ci.org/pascalsystem/callback-manager-ts)
-[![npm version](https://badge.fury.io/js/callback-manager-ts.svg)](http://badge.fury.io/js/callback-manager-ts) :D
+[![npm version](https://badge.fury.io/js/callback-manager-ts.svg)](http://badge.fury.io/js/callback-manager-ts)
 
 # callback-manager-ts
 
