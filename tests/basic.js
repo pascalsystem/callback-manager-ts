@@ -199,8 +199,8 @@ describe('Test Empty', function(){
     cb.addFunction(testFunction, [5,5]);
     cb.addFunction(testFunction, [5,10]);
     cb.start(function(results){
-      var res1 = getResultObjectByIndexAndParamNum(0, 0, results);
-      var res2 = getResultObjectByIndexAndParamNum(1, 0, results);
+      var res1 = example.getResultObjectByIndexAndParamNum(0, 0, results);
+      var res2 = example.getResultObjectByIndexAndParamNum(1, 0, results);
       
       if (res1 !== null) {
         throw new Error('result from idx 0 is not equal null');
