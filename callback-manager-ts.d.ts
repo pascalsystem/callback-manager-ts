@@ -9,6 +9,7 @@ declare module CallbackManagerTs
 	{
 		public getResultByIndex(index:number):any;
 		public isComplete():boolean;
+		public getCompleteNums():number;
     }
     export class Result extends BasicResult
     {
