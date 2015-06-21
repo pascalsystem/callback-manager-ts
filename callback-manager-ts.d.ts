@@ -28,4 +28,10 @@ declare module CallbackManagerTs
 	{
 		
 	}
+	export class AsyncBreak extends Manager
+	{
+		public start(callback?:(results:BasicResult)=>void, errorCallback?:(results:BasicResult)=>void);
+		public addFunction(func:Function, args:any[], callbackArgIndex?:number, errorArgumentIndex?:number);
+		public addObjectMethod(obj:Object, methodName:string, args:any[], callbackArgIndex?:number, errorArgumentIndex?:number);
+	}
 }

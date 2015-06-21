@@ -12,6 +12,21 @@ var PATHS = {
 	}
 };
 
+var getRunScript = function(testName, next) {
+	return gulp.src('tests/' + testName + '.js')
+        .pipe(mocha())
+        .once('error', function () {
+			if (typeof next === 'function') {
+				next();
+			}
+        })
+        .once('end', function () {
+			if (typeof next === 'function') {
+				next();
+			}
+        })
+};
+
 gulp.task('typescript', function(){
 	return gulp.src(PATHS.src.ts).pipe(ts({
 		typescript: typescript,
@@ -21,15 +36,8 @@ gulp.task('typescript', function(){
 	})).js.pipe(gulp.dest(PATHS.dest.dist));
 });
 
-gulp.task('test', ['typescript'], function () {
-    return gulp.src('tests/basic.js')
-        .pipe(mocha())
-        .once('error', function () {
-            process.exit(1);
-        })
-        .once('end', function () {
-            process.exit();
-        });
+gulp.task('test', ['typescript'], function(){
+	getRunScript('basic');
 });
 
 gulp.task('build', ['test'], function(){
