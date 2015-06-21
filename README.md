@@ -1,6 +1,11 @@
 # callback-manager-ts
 
 This is the library for managing and grouping response from callback.
+~~~
+1. Synchronous mode ( all callable execute in the same time, and you got ane results )
+2. Asynchronous mode ( callable execute one after one, and you got one results )
+3. Asynchronous with break on error ( callable execute one after one, and stop if catch error )
+~~~
 
 # Usage
 [Documentation](http://callbackmanagerts.pascalsystem.pl/)
@@ -29,6 +34,5 @@ npm run-script generate-docs
 ```
 #Future
 ~~~
-1. Create asynchronous queue with break on first error, and passing data to next callable
-2. Fix docblock in current files and generate correctly library documentation
+1. Fix docblock in current files and generate correctly library documentation
 ~~~
