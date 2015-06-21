@@ -201,3 +201,62 @@ describe('Test Empty', function(){
     });
   });
 });
+
+//async break
+describe('Test async Function with break on error', function(){
+  it("should return number equal 5 / Error and break queue", function(done){
+    var cb = new lib.AsyncBreak();
+    cb.addFunction(example.baseCbError, [4, 1, undefined], 2, 0);
+    cb.addFunction(example.baseCbError, [4, 2, undefined], 2, 0);
+    cb.addFunction(example.baseCbError, [4, 3, undefined], 2, 0);
+    cb.start(function(results){
+      throw new Error('not expect success callback');
+    },function(results) {
+      if (results.isComplete() !== false) {
+        throw new Error('this results expect not complete, but given completed');
+      }
+      if (results.getCompleteNums() !== 2) {
+        throw new Error('this results expect only two callable complete');
+      }
+      
+      var args1 = results.getResultByIndex(0);
+      var args2 = results.getResultByIndex(1);
+      if ((args1.length !== 2) || (args2.length !== 2)) {
+        throw new Error('results required two arguments');
+      }
+      if ((args1[0] !== null) || (args1[1] !== 5)) {
+        throw new Error('first result required object [null, 5]');
+      }
+      if (!(args2[0] instanceof Error) || (args2[1] !== null)) {
+        throw new Error('first result required object [Error, null]');
+      }
+      
+      done();
+    });
+  });
+
+  it("should return number equal 10/11/12", function(done){
+    var cb = new lib.AsyncBreak();
+    cb.addFunction(example.baseCbError, [5, 5, undefined], 2, 0);
+    cb.addFunction(example.baseCbError, [5, 6, undefined], 2, 0);
+    cb.addFunction(example.baseCbError, [5, 7, undefined], 2, 0);
+    cb.start(function(results) {
+      if (results.isComplete() !== true) {
+        throw new Error('not completed response results');
+      }
+      if (example.getResultObjectByIndexAndParamNum(0, 1, results) !== 10) {
+        throw new Error('result for first callable diffrent then 10');
+      }
+      if (example.getResultObjectByIndexAndParamNum(1, 1, results) !== 11) {
+        throw new Error('result for first callable diffrent then 11');
+      }
+      if (example.getResultObjectByIndexAndParamNum(2, 1, results) !== 12) {
+        throw new Error('result for first callable diffrent then 12');
+      }
+      
+      done();
+    }, function(results) {
+      throw new Error('not expect error callback');
+    });
+  });
+});

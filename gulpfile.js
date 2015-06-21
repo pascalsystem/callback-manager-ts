@@ -36,18 +36,8 @@ gulp.task('typescript', function(){
 	})).js.pipe(gulp.dest(PATHS.dest.dist));
 });
 
-gulp.task('test-basic', ['typescript'], function(){
-    getRunScript('basic');
-});	
-
-gulp.task('test-queuebreak', ['typescript'], function(){
-    getRunScript('queuebreak');
-});
-
 gulp.task('test', ['typescript'], function(){
-	getRunScript('basic', function(){
-		getRunScript('queuebreak');
-	});
+	getRunScript('basic');
 });
 
 gulp.task('build', ['test'], function(){

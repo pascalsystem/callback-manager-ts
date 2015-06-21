@@ -10,9 +10,8 @@ var baseCb = function(param1, param2, cb) {
 var baseCbError = function(param1, param2, cb) {
 	var res = param1 + param2;
 	setTimeout(function(){
-    return cb(null, res);
-		if (res == 10) {
-      return cb(new Error('result is equal 10'), null);
+    if (res == 6) {
+      return cb(new Error('result is equal 6'), null);
     }
     cb(null, res);
 	}, Math.round(Math.random()* 100));

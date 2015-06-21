@@ -49,6 +49,18 @@ export class BasicResult
 	{
 		return this.result.isComplete();
 	}
+	
+	/**
+	 * Get complete callable items
+	 * 
+	 * @method getCompleteNums
+	 * @returns {number}
+	 * @public
+	 */
+	public getCompleteNums():number
+	{
+		return this.result.getCompleteNums();
+	}
 }
 
 /**
@@ -116,6 +128,25 @@ export class Result
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Get number complete callable
+	 * 
+	 * @method getCompleteNums
+	 * @returns {number}
+	 * @public
+	 */
+	public getCompleteNums():number
+	{
+		var res:number = 0;
+		for (var i=0;i<this.status.length;i++) {
+			if ((typeof this.status[i] === 'boolean') && this.status[i]) {
+				res++;
+			}
+		}
+		
+		return res;
 	}
 	
 	/**
@@ -378,9 +409,32 @@ export class Manager
 	protected sendResponse()
 	{
 		if (this.checkEnd()) {
-			var response:BasicResult = new this.responseClass(this.results);
-			this.callback(response);
+			this.executeCallback();
 		}
+	}
+	
+	/**
+	 * Execute global callback
+	 * 
+	 * @method executeCallback
+	 * @protected
+	 */
+	protected executeCallback()
+	{
+		this.callback(this.getCallbackResult());
+	}
+	
+	/**
+	 * Get callback results with items value
+	 * 
+	 * @method getCallbackResult
+	 * @returns {BasicResult}
+	 * @protected
+	 */
+	protected getCallbackResult():BasicResult
+	{
+		var response:BasicResult = new this.responseClass(this.results);
+		return response;
 	}
 	
 	/**

@@ -32,6 +32,16 @@ var BasicResult = (function () {
     BasicResult.prototype.isComplete = function () {
         return this.result.isComplete();
     };
+    /**
+     * Get complete callable items
+     *
+     * @method getCompleteNums
+     * @returns {number}
+     * @public
+     */
+    BasicResult.prototype.getCompleteNums = function () {
+        return this.result.getCompleteNums();
+    };
     return BasicResult;
 })();
 exports.BasicResult = BasicResult;
@@ -91,6 +101,22 @@ var Result = (function () {
             }
         }
         return true;
+    };
+    /**
+     * Get number complete callable
+     *
+     * @method getCompleteNums
+     * @returns {number}
+     * @public
+     */
+    Result.prototype.getCompleteNums = function () {
+        var res = 0;
+        for (var i = 0; i < this.status.length; i++) {
+            if ((typeof this.status[i] === 'boolean') && this.status[i]) {
+                res++;
+            }
+        }
+        return res;
     };
     /**
      * Set result by index
@@ -296,9 +322,28 @@ var Manager = (function () {
      */
     Manager.prototype.sendResponse = function () {
         if (this.checkEnd()) {
-            var response = new this.responseClass(this.results);
-            this.callback(response);
+            this.executeCallback();
         }
+    };
+    /**
+     * Execute global callback
+     *
+     * @method executeCallback
+     * @protected
+     */
+    Manager.prototype.executeCallback = function () {
+        this.callback(this.getCallbackResult());
+    };
+    /**
+     * Get callback results with items value
+     *
+     * @method getCallbackResult
+     * @returns {BasicResult}
+     * @protected
+     */
+    Manager.prototype.getCallbackResult = function () {
+        var response = new this.responseClass(this.results);
+        return response;
     };
     /**
      * Set callback for results
