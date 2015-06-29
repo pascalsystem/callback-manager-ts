@@ -8,6 +8,7 @@ declare module CallbackManagerTs
     class BasicResult
 	{
 		public getResultByIndex(index:number):any;
+        public getResultByKey(key:string):any;
 		public isComplete():boolean;
 		public getCompleteNums():number;
     }
