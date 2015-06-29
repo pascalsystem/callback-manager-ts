@@ -7,6 +7,7 @@ import item = require('./item');
  *
  * @class BasicResult
  * @param result {Result}
+ * @param keys string[]
  * @constructor
  **/
 export class BasicResult
@@ -19,8 +20,16 @@ export class BasicResult
 	 * @private
 	 */
 	private result:Result
+	/**
+	 * Keys
+	 * 
+	 * @property keys
+	 * @type {string[]}
+	 * @private
+	 */
+	private keys:string[];
 	
-	constructor(result:Result)
+	constructor(result:Result, keys?:string[])
 	{
 		this.result = result;		
 	}
@@ -36,6 +45,23 @@ export class BasicResult
 	public getResultByIndex(index:number):any
 	{
 		return this.result.getResult(index);
+	}
+	
+	/**
+	 * Get result by index key
+	 * 
+	 * @method getResultByKey
+	 * @param key {string}
+	 * @returns {any[]}
+	 * @public
+	 */
+	public getResultByKey(key:string):any
+	{
+		var idx:number = this.keys.indexOf(key);
+		if (idx === -1) {
+			throw new Error('not defined result key: ' + key);
+		}
+		return this.getResultByIndex(idx);
 	}
 	
 	/**
@@ -235,6 +261,14 @@ export class Manager
 	 */
 	protected items:item.ItemAbstract[] = [];
 	/**
+	 * Keys data
+	 * 
+	 * @property keys
+	 * @type {string[]}
+	 * @private
+	 */
+	private keys:string[] = [];
+	/**
 	 * Global callback for all items
 	 * 
 	 * @property callback
@@ -249,7 +283,7 @@ export class Manager
 	 * @type {Class}
 	 * @private
 	 */
-	private responseClass:new (result:Result) => BasicResult;
+	private responseClass:new (result:Result, keys?:string[]) => BasicResult;
 	
 	public constructor(options?:{[key:string]:any})
 	{
@@ -274,6 +308,23 @@ export class Manager
 		var nextIndex = this.getNextIndex();
 		var element:item.ItemFunction = new item.ItemFunction(func, this, nextIndex, args, callbackArgIndex);
 		this.addItemElement(element);
+		this.keys.push(undefined);
+	}
+	
+	/**
+	 * Add callable function with index
+	 * 
+	 * @method addFunction
+	 * @param key {string}
+	 * @param func {Function} function for call
+	 * @param args {any[]} arguments for function
+	 * @param callbackArgIndex {number} index for argument which is callback
+	 * @public
+	 */
+	public addFunctionByKey(key:string, func:Function, args:any[], callbackArgIndex?:number)
+	{
+		this.addFunction(func, args, callbackArgIndex);
+		this.registerKeyIndex(key);
 	}
 	
 	/**
@@ -291,6 +342,24 @@ export class Manager
 		var nextIndex = this.getNextIndex();
 		var element:item.ItemObjectMethod = new item.ItemObjectMethod(obj, methodName, this, nextIndex, args, callbackArgIndex);
 		this.addItemElement(element);
+		this.keys.push(undefined)
+	}
+	
+	/**
+	 * Add callable method for object with key
+	 * 
+	 * @method addObjectMethod
+	 * @param key {string}
+	 * @param obj {Object} Object with method
+	 * @param methodName {string} method name for call on object
+	 * @param args {any[]} arguments for method
+	 * @param callbackArgIndex {number} index for argument which is callback
+	 * @public
+	 */
+	public addObjectMethodByKey(key:string, obj:Object, methodName:string, args:any[], callbackArgIndex?:number)
+	{
+		this.addObjectMethod(obj, methodName, args, callbackArgIndex);
+		this.registerKeyIndex(key);
 	}
 	
 	/**
@@ -433,7 +502,7 @@ export class Manager
 	 */
 	protected getCallbackResult():BasicResult
 	{
-		var response:BasicResult = new this.responseClass(this.results);
+		var response:BasicResult = new this.responseClass(this.results, this.keys);
 		return response;
 	}
 	
@@ -472,5 +541,20 @@ export class Manager
 	{
 		this.items.push(element);
 		this.results.registerNextIndex();
-	}	
+	}
+	
+	/**
+	 * Add result key index
+	 * 
+	 * @method registerKeyIndex
+	 * @param key {string}
+	 * @private
+	 */
+	private registerKeyIndex(key:string)
+	{
+		if (this.keys.indexOf(key) !== -1) {
+			throw new Error('result key index: ' + key + ' exists before');
+		}
+		this.keys.push(key);
+	}
 }
