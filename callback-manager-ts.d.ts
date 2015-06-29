@@ -18,7 +18,9 @@ declare module CallbackManagerTs
 	class Manager {
 		public constructor(options?:{[key:string]:any});
 		public addFunction(func:Function, args:any[], callbackArgIndex?:number);
+		public addFunctionByKey(key:string, func:Function, args:any[], callbackArgIndex?:number);
 		public addObjectMethod(obj:Object, methodName:string, args:any[], callbackArgIndex?:number);
+		public addObjectMethodByKey(key:string, obj:Object, methodName:string, args:any[], callbackArgIndex?:number);
 		public start(callback?:(results:BasicResult)=>void);
 	}
 	export class Sync extends Manager
@@ -33,6 +35,8 @@ declare module CallbackManagerTs
 	{
 		public start(callback?:(results:BasicResult)=>void, errorCallback?:(results:BasicResult)=>void);
 		public addFunction(func:Function, args:any[], callbackArgIndex?:number, errorArgumentIndex?:number);
+		public addFunctionByKey(key:string, func:Function, args:any[], callbackArgIndex?:number, errorArgumentIndex?:number);
 		public addObjectMethod(obj:Object, methodName:string, args:any[], callbackArgIndex?:number, errorArgumentIndex?:number);
+		public addObjectMethodByKey(key:string, obj:Object, methodName:string, args:any[], callbackArgIndex?:number, errorArgumentIndex?:number);
 	}
 }

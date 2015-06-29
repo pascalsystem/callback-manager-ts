@@ -5,11 +5,13 @@ var item = require('./item');
  *
  * @class BasicResult
  * @param result {Result}
+ * @param keys string[]
  * @constructor
  **/
 var BasicResult = (function () {
-    function BasicResult(result) {
+    function BasicResult(result, keys) {
         this.result = result;
+        this.keys = keys;
     }
     /**
      * Get result by index
@@ -21,6 +23,21 @@ var BasicResult = (function () {
      */
     BasicResult.prototype.getResultByIndex = function (index) {
         return this.result.getResult(index);
+    };
+    /**
+     * Get result by index key
+     *
+     * @method getResultByKey
+     * @param key {string}
+     * @returns {any[]}
+     * @public
+     */
+    BasicResult.prototype.getResultByKey = function (key) {
+        var idx = this.keys.indexOf(key);
+        if (idx === -1) {
+            throw new Error('not defined result key: ' + key);
+        }
+        return this.getResultByIndex(idx);
     };
     /**
      * Check all callback given result
@@ -189,6 +206,14 @@ var Manager = (function () {
          * @protected
          */
         this.items = [];
+        /**
+         * Keys data
+         *
+         * @property keys
+         * @type {string[]}
+         * @private
+         */
+        this.keys = [];
         this.results = new Result();
         if (typeof options === 'undefined') {
             options = {};
@@ -205,9 +230,23 @@ var Manager = (function () {
      * @public
      */
     Manager.prototype.addFunction = function (func, args, callbackArgIndex) {
+        this.addFunctionByKey(undefined, func, args, callbackArgIndex);
+    };
+    /**
+     * Add callable function with index
+     *
+     * @method addFunction
+     * @param key {string}
+     * @param func {Function} function for call
+     * @param args {any[]} arguments for function
+     * @param callbackArgIndex {number} index for argument which is callback
+     * @public
+     */
+    Manager.prototype.addFunctionByKey = function (key, func, args, callbackArgIndex) {
         var nextIndex = this.getNextIndex();
         var element = new item.ItemFunction(func, this, nextIndex, args, callbackArgIndex);
         this.addItemElement(element);
+        this.registerKeyIndex(key);
     };
     /**
      * Add callable method for object
@@ -220,9 +259,24 @@ var Manager = (function () {
      * @public
      */
     Manager.prototype.addObjectMethod = function (obj, methodName, args, callbackArgIndex) {
+        this.addObjectMethodByKey(undefined, obj, methodName, args, callbackArgIndex);
+    };
+    /**
+     * Add callable method for object with key
+     *
+     * @method addObjectMethod
+     * @param key {string}
+     * @param obj {Object} Object with method
+     * @param methodName {string} method name for call on object
+     * @param args {any[]} arguments for method
+     * @param callbackArgIndex {number} index for argument which is callback
+     * @public
+     */
+    Manager.prototype.addObjectMethodByKey = function (key, obj, methodName, args, callbackArgIndex) {
         var nextIndex = this.getNextIndex();
         var element = new item.ItemObjectMethod(obj, methodName, this, nextIndex, args, callbackArgIndex);
         this.addItemElement(element);
+        this.registerKeyIndex(key);
     };
     /**
      * Start execute
@@ -342,7 +396,7 @@ var Manager = (function () {
      * @protected
      */
     Manager.prototype.getCallbackResult = function () {
-        var response = new this.responseClass(this.results);
+        var response = new this.responseClass(this.results, this.keys);
         return response;
     };
     /**
@@ -375,6 +429,24 @@ var Manager = (function () {
     Manager.prototype.addItemElement = function (element) {
         this.items.push(element);
         this.results.registerNextIndex();
+    };
+    /**
+     * Add result key index
+     *
+     * @method registerKeyIndex
+     * @param key {string}
+     * @private
+     */
+    Manager.prototype.registerKeyIndex = function (key) {
+        if (typeof key === 'string') {
+            if (this.keys.indexOf(key) !== -1) {
+                throw new Error('result key index: ' + key + ' exists before');
+            }
+            this.keys.push(key);
+        }
+        else {
+            this.keys.push(undefined);
+        }
     };
     return Manager;
 })();

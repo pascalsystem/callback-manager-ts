@@ -29,9 +29,10 @@ export class BasicResult
 	 */
 	private keys:string[];
 	
-	constructor(result:Result, keys?:string[])
+	constructor(result:Result, keys:string[])
 	{
-		this.result = result;		
+		this.result = result;
+		this.keys = keys;
 	}
 	
 	/**
@@ -305,10 +306,7 @@ export class Manager
 	 */
 	public addFunction(func:Function, args:any[], callbackArgIndex?:number)
 	{
-		var nextIndex = this.getNextIndex();
-		var element:item.ItemFunction = new item.ItemFunction(func, this, nextIndex, args, callbackArgIndex);
-		this.addItemElement(element);
-		this.keys.push(undefined);
+		this.addFunctionByKey(undefined, func, args, callbackArgIndex);
 	}
 	
 	/**
@@ -323,7 +321,9 @@ export class Manager
 	 */
 	public addFunctionByKey(key:string, func:Function, args:any[], callbackArgIndex?:number)
 	{
-		this.addFunction(func, args, callbackArgIndex);
+		var nextIndex = this.getNextIndex();
+		var element:item.ItemFunction = new item.ItemFunction(func, this, nextIndex, args, callbackArgIndex);
+		this.addItemElement(element);
 		this.registerKeyIndex(key);
 	}
 	
@@ -339,10 +339,7 @@ export class Manager
 	 */
 	public addObjectMethod(obj:Object, methodName:string, args:any[], callbackArgIndex?:number)
 	{
-		var nextIndex = this.getNextIndex();
-		var element:item.ItemObjectMethod = new item.ItemObjectMethod(obj, methodName, this, nextIndex, args, callbackArgIndex);
-		this.addItemElement(element);
-		this.keys.push(undefined)
+		this.addObjectMethodByKey(undefined, obj, methodName, args, callbackArgIndex);
 	}
 	
 	/**
@@ -358,7 +355,9 @@ export class Manager
 	 */
 	public addObjectMethodByKey(key:string, obj:Object, methodName:string, args:any[], callbackArgIndex?:number)
 	{
-		this.addObjectMethod(obj, methodName, args, callbackArgIndex);
+		var nextIndex = this.getNextIndex();
+		var element:item.ItemObjectMethod = new item.ItemObjectMethod(obj, methodName, this, nextIndex, args, callbackArgIndex);
+		this.addItemElement(element);
 		this.registerKeyIndex(key);
 	}
 	
@@ -401,7 +400,7 @@ export class Manager
 	 * @param responseClass {Class}
 	 * @protected
 	 */
-	protected setCallbackResponseClass(responseClass:new (result:Result) => BasicResult)
+	protected setCallbackResponseClass(responseClass:new (result:Result, keys:string[]) => BasicResult)
 	{
 		this.responseClass = responseClass;
 	}
@@ -552,9 +551,13 @@ export class Manager
 	 */
 	private registerKeyIndex(key:string)
 	{
-		if (this.keys.indexOf(key) !== -1) {
-			throw new Error('result key index: ' + key + ' exists before');
+		if (typeof key === 'string') {
+			if (this.keys.indexOf(key) !== -1) {
+				throw new Error('result key index: ' + key + ' exists before');
+			}
+			this.keys.push(key);
+		} else {
+			this.keys.push(undefined);
 		}
-		this.keys.push(key);
 	}
 }

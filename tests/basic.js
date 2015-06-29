@@ -49,6 +49,66 @@ describe('Test sync Function', function(){
       done();
     });
   });
+
+  it("should return number equal 20 - key index result", function(done){
+    var cb = new lib.Sync();
+    cb.addFunctionByKey('key1', example.baseCb, [10, 10]);
+    cb.start(function(results){
+      if (!results.isComplete()) {
+        throw new Error('problem with isComplete method');
+      }
+      var resultsData = results.getResultByKey('key1');
+      if (typeof resultsData !== 'object' || typeof resultsData.length !== 'number' || resultsData.length !== 1) {
+        throw new Error('response result data is not object with one array elements');
+      }
+      if (resultsData[0] !== 20) {
+        throw new Error('bad value response, expect: 20, given: ' + resultsData[0].toString() + ' for key: key1');
+      }
+      
+      done();
+    });
+  });
+  
+  it("should return number equal 20/21/22/23/24 - mixed key index result and without", function(done){
+    var cb = new lib.Sync();
+    cb.addFunction(example.baseCb, [10, 10]);
+    cb.addFunction(example.baseCb, [10, 11]);
+    cb.addFunctionByKey('k1', example.baseCb, [10, 12]);
+    cb.addFunction(example.baseCb, [10, 13]);
+    cb.addFunctionByKey('k2', example.baseCb, [10, 14]);
+    cb.start(function(results) {
+      if (!results.isComplete()) {
+        throw new Error('problem with isComplete method');
+      }
+      if (example.getResultObjectByIndexAndParamNum(0, 0, results) !== 20) {
+        throw new Error('bad value response, expect: 20, in idx 0');
+      }
+      if (example.getResultObjectByIndexAndParamNum(1, 0, results) !== 21) {
+        throw new Error('bad value response, expect: 21, in idx 1');
+      }
+      if (example.getResultObjectByIndexAndParamNum(3, 0, results) !== 23) {
+        throw new Error('bad value response, expect: 23, in idx 3');
+      }
+      
+      var resultsData = results.getResultByKey('k1');
+      if (typeof resultsData !== 'object' || typeof resultsData.length !== 'number' || resultsData.length !== 1) {
+        throw new Error('response result data is not object with one array elements for k1');
+      }
+      if (resultsData[0] !== 22) {
+        throw new Error('bad value response, expect: 22, given: ' + resultsData[0].toString() + ' for key: k1');
+      }
+
+      var resultsData = results.getResultByKey('k2');
+      if (typeof resultsData !== 'object' || typeof resultsData.length !== 'number' || resultsData.length !== 1) {
+        throw new Error('response result data is not object with one array elements for k2');
+      }
+      if (resultsData[0] !== 24) {
+        throw new Error('bad value response, expect: 24, given: ' + resultsData[0].toString() + ' for key: k2');
+      }      
+      
+      done();
+    });
+  });
 });
 
 describe('Test sync Object', function(){
@@ -64,7 +124,55 @@ describe('Test sync Object', function(){
       if (resValue !== 20) {
         throw new Error('bad value response, expect: 20, given: ' + resValue.toString());
       }
+      
       done();
+    });
+  });
+  
+  it("should return number equal 20 - object key", function(done){
+    var obj = new example.objCb(10);
+    var cb = new lib.Sync();
+    cb.addObjectMethodByKey('k1', obj, 'get', [10, undefined], 1);
+    cb.start(function(results){
+      if (!results.isComplete()) {
+        throw new Error('problem with isComplete method');
+      }
+      var resultsData = results.getResultByKey('k1');
+      if (typeof resultsData !== 'object' || typeof resultsData.length !== 'number' || resultsData.length !== 1) {
+        throw new Error('response result data is not object with one array elements for k1');
+      }
+      if (resultsData[0] !== 20) {
+        throw new Error('bad value response, expect: 20, given: ' + resultsData[0].toString() + ' for key: k1');
+      }      
+
+      done();
+    });
+  });
+  
+  it("should return number equal 20 - object key not exists", function(done){
+    var obj = new example.objCb(10);
+    var cb = new lib.Sync();
+    cb.addObjectMethodByKey('k1', obj, 'get', [10, undefined], 1);
+    cb.start(function(results){
+      if (!results.isComplete()) {
+        throw new Error('problem with isComplete method');
+      }
+      var resultsData = results.getResultByKey('k1');
+      if (typeof resultsData !== 'object' || typeof resultsData.length !== 'number' || resultsData.length !== 1) {
+        throw new Error('response result data is not object with one array elements for k1');
+      }
+      if (resultsData[0] !== 20) {
+        throw new Error('bad value response, expect: 20, given: ' + resultsData[0].toString() + ' for key: k1');
+      }
+      
+      try {
+        results.getResultByKey('k22');
+      } catch (err) {
+        done();
+        return;
+      }
+      
+      throw new Error('not throw error for key results k22');
     });
   });
   
