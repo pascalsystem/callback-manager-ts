@@ -5,9 +5,9 @@
 
 This is the library for managing and grouping response from callback.
 ~~~
-1. Synchronous mode ( all callable execute in the same time, and you got ane results )
-2. Asynchronous mode ( callable execute one after one, and you got one results )
-3. Asynchronous with break on error ( callable execute one after one, and stop if catch error )
+1. Asynchronous mode ( all callable execute in the same time, and you got ane results )
+2. Synchronous mode ( callable execute one after one, and you got one results )
+3. Synchronous with break on error ( callable execute one after one, and stop if catch error )
 ~~~
 
 # Usage
